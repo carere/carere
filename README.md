@@ -32,5 +32,5 @@ I keep things simple, ship useful features, and improve a little every day.
 <p align="center">
   <a href="https://www.linkedin.com/in/kevin-abatan-94538085/">LinkedIn</a> &nbsp;·&nbsp;
   <a href="https://x.com/carere_dev">X (@carere_dev)</a> &nbsp;·&nbsp;
-  <a href="https://carere.dev">carere.dev</a> &nbsp;·&nbsp;
+  <a href="https://carere.dev">carere.dev</a>
 </p>
