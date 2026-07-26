@@ -1,0 +1,90 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, render } from "astro:content";
+import type { Locale } from "@/i18n/index";
+import { useTranslations } from "@/i18n/index";
+import { filterByLang } from "@/lib/collections";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import CTA from "@/components/sections/CTA.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Layout from "@/layouts/Layout.astro";
+import site from "@/config/site.json";
+import PhoneIcon from "@/assets/icons/phone.svg";
+import MailIcon from "@/assets/icons/mail.svg";
+
+export const getStaticPaths = (async () => {
+  const pages = await getCollection("pages");
+  return [
+    {
+      params: { lang: undefined },
+      props: {
+        page: filterByLang(pages, "en").find((p) => p.id === "en/privacy")!,
+      },
+    },
+    {
+      params: { lang: "fr" },
+      props: {
+        page: filterByLang(pages, "fr").find((p) => p.id === "fr/privacy")!,
+      },
+    },
+  ];
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const lang = (Astro.params.lang === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+
+const companyName = String(site.site.company_name);
+const postalCode = String(site.company.postal_code);
+const city = String(site.company.city);
+const country = String(site.company.country);
+const address = String(site.company.address);
+const tel = String(site.company.tel);
+const email = String(site.company.email);
+
+const { Content } = await render(page);
+---
+
+<Layout
+  title={page.data.title}
+  description={page.data.description}
+  noindex={page.data.noindex}
+  lang={lang}
+>
+  <PageHero title={page.data.title} subtitle={page.data.subtitle} />
+
+  <Section>
+    <Container size="small">
+      <div class="prose">
+        <Content />
+      </div>
+
+      <div class="mt-xl p-xl bg-bg-secondary rounded-3xl md:p-2xl">
+        <p class="m-0! text-base leading-(--lh-relaxed) md:text-md">
+          {companyName}<br />
+          {address}<br />
+          {
+            lang === "fr" ? `${postalCode} ${city}` : `${city}, ${postalCode}`
+          }<br />
+          {country}<br /><br />
+          <span class="inline-flex items-center gap-4">
+            <PhoneIcon width={16} height={16} />
+            <a class="hover:underline underline-offset-2" href={`tel:${tel}`}
+              >{tel}</a
+            >
+          </span><br />
+          <span class="inline-flex items-center gap-4">
+            <MailIcon width={16} height={16} />
+            <a
+              class="hover:underline underline-offset-2"
+              href={`mailto:${email}`}>{email}</a
+            >
+          </span>
+        </p>
+      </div>
+    </Container>
+  </Section>
+
+  <CTA lang={lang} />
+</Layout>

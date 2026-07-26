@@ -1,0 +1,26 @@
+---
+import LogoImage from "@/assets/logo.svg";
+import site from "@/config/site.json";
+
+interface Props {
+  h1?: boolean;
+  inverse?: boolean;
+  class?: string;
+}
+
+const { h1, inverse, class: className, ...rest } = Astro.props;
+const siteTitle = site.site.title;
+---
+
+<a href="/" aria-label={siteTitle} class="flex items-center gap-sm">
+  <LogoImage class="size-10" />
+  <span
+    class:list={[
+      "text-lg font-medium md:text-xl",
+      inverse ? "text-text-inverse dark:text-text" : "text-text",
+    ]}
+    style="font-family: 'Zen Kaku Gothic New', sans-serif;"
+  >
+    {siteTitle}
+  </span>
+</a>

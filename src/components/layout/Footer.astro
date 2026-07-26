@@ -1,0 +1,72 @@
+---
+import Container from "@/components/layout/Container.astro";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher.astro";
+import SiteLogo from "@/components/ui/SiteLogo.astro";
+import SocialLinks from "@/components/ui/SocialLinks.astro";
+import ThemeSwitcher from "@/components/ui/ThemeSwitcher.astro";
+import { useTranslations, getLocalePath, type Locale } from "@/i18n/index";
+import site from "@/config/site.json";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const t = useTranslations(lang);
+
+const footerMenus = t.menu.footer;
+---
+
+<footer class="pt-3xl pb-lg bg-primary-dark">
+  <Container>
+    <div
+      class="grid grid-cols-1 gap-2xl mb-xl md:grid-cols-2 md:gap-3xl md:mb-2xl"
+    >
+      <div class="flex flex-col gap-lg">
+        <SiteLogo class="z-(--z-index-base)" inverse />
+        <SocialLinks
+          size={20}
+          class="flex gap-sm"
+          linkClass="flex items-center justify-center w-xl h-xl text-text-light dark:text-text-sub transition-transform duration-(--transition-timing-base) hover:-translate-y-0.5"
+        />
+      </div>
+
+      <nav class="grid grid-cols-2 gap-x-lg gap-y-xl sm:gap-xl">
+        {
+          footerMenus.map((group) => (
+            <div>
+              <h3 class="mb-md text-text-inverse-lightest dark:text-text text-sm font-medium leading-(--lh-tight) tracking-wide md:mb-lg md:text-base">
+                {group.name}
+              </h3>
+              <ul class="flex flex-col gap-sm">
+                {group.menus.map((menu) => (
+                  <li>
+                    <a
+                      href={getLocalePath(menu.path, lang)}
+                      class="inline-block text-text-inverse-light dark:text-text-sub text-sm leading-(--lh-relaxed) transition-colors duration-(--transition-timing-fast) hover:text-text-inverse dark:hover:text-text hover:underline md:text-base"
+                    >
+                      {menu.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <div
+      class="flex flex-col gap-md pt-lg border-t border-border-inverse dark:border-border-inverse md:flex-row md:items-center md:justify-between md:pt-xl"
+    >
+      <p class="text-text-inverse-sub dark:text-text-light text-xs md:text-sm">
+        © {new Date().getFullYear()}
+        {site.site.company_name}
+      </p>
+      <div class="flex items-center gap-lg">
+        <LanguageSwitcher lang={lang} variant="footer" />
+        <ThemeSwitcher />
+      </div>
+    </div>
+  </Container>
+</footer>

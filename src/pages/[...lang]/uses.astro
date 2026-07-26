@@ -1,0 +1,62 @@
+---
+import type { Locale } from "@/i18n/index";
+import { useTranslations } from "@/i18n/index";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import CTA from "@/components/sections/CTA.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Layout from "@/layouts/Layout.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "fr" } }];
+}
+
+const lang = (Astro.params.lang === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+---
+
+<Layout
+  title={t.ui.uses_page.page_title}
+  description={t.ui.uses_page.page_description}
+  lang={lang}
+>
+  <PageHero
+    title={t.ui.uses_page.page_title}
+    subtitle={t.ui.uses_page.page_subtitle}
+  />
+  <Section>
+    <Container>
+      <div class="flex flex-col gap-3xl md:gap-4xl">
+        {
+          t.uses.map((category) => (
+            <div class="grid gap-xl md:grid-cols-[200px_1fr] md:gap-4xl">
+              <h2 class="text-text text-xl md:text-2xl font-medium leading-(--lh-snug) md:sticky md:top-4xl md:h-fit">
+                {category.title}
+              </h2>
+              <ul class="flex flex-col gap-lg border-l border-border-sub pl-xl">
+                {category.items.map((item) => (
+                  <li class="flex flex-col gap-xs">
+                    <h3 class="text-text text-base md:text-md font-medium leading-(--lh-snug)">
+                      {item.name}
+                    </h3>
+                    <p class="text-text-sub text-sm md:text-base leading-(--lh-loose)">
+                      {item.description}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </Section>
+  <CTA lang={lang} />
+</Layout>
+
+<!-- scroll-behavior: auto cannot be set as a Tailwind utility on html from a page component -->
+<style>
+  html {
+    scroll-behavior: auto;
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+interface Props {
+  size?: "small" | "medium" | "large";
+}
+
+const { size = "large" } = Astro.props;
+
+const sizeClasses = {
+  small:
+    "sm:max-w-[calc(var(--container-sm)+calc(var(--spacing-2xl)*2))]",
+  medium:
+    "sm:max-w-[calc(var(--container-md)+calc(var(--spacing-2xl)*2))]",
+  large:
+    "sm:max-w-[calc(var(--container-lg)+calc(var(--spacing-2xl)*2))]",
+};
+---
+
+<div class:list={["w-full mx-auto px-lg sm:px-2xl", sizeClasses[size]]}>
+  <slot />
+</div>

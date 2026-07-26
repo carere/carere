@@ -1,0 +1,65 @@
+[
+  {
+    "title": "Workstation",
+    "items": [
+      {
+        "name": "MacBook Pro 16\" M4 Max",
+        "description": "I loved Linux for years, but switched to macOS for a rock-solid system. The M4 Max chip is purely about raw performance."
+      },
+      {
+        "name": "iPad Pro 13\" M4 Pro",
+        "description": "I love having a dual display, but didn't want a standalone monitor — I wanted a tablet for drawing and shaping 3D models for my printer."
+      },
+      {
+        "name": "Mac Mini M4 Pro",
+        "description": "I run Vibe Kanban on it and use it as a home server. Best investment to date."
+      },
+      {
+        "name": "Iqunix MQ80",
+        "description": "A mechanical keyboard with a satisfying typing experience. Black and red like my setup :)"
+      },
+      {
+        "name": "Pixel 10 Pro",
+        "description": "Always been on Android, don't plan to switch. Been loving the Pixel experience ever since the open-source days."
+      }
+    ]
+  },
+  {
+    "title": "Development Tools",
+    "items": [
+      {
+        "name": "VsCode",
+        "description": "Tried Cursor, Neovim, and others, but I keep coming back to VsCode."
+      },
+      {
+        "name": "Ghostty",
+        "description": "I tried Alacritty, but I just love Ghostty — also made by the GOAT, Hashimoto!"
+      },
+      {
+        "name": "Figma",
+        "description": "Been a Figma fan since the early days. Now I'm using it to bridge design and development through their great MCP server."
+      },
+      {
+        "name": "Raycast",
+        "description": "Best app launcher for macOS, hands down."
+      }
+    ]
+  },
+  {
+    "title": "AI",
+    "items": [
+      {
+        "name": "Claude Code",
+        "description": "Best companion for coding, can't imagine working without it. AI is a total game changer — it 10x's my productivity every day!"
+      },
+      {
+        "name": "Chrome",
+        "description": "Tried so much alternatives, but Chrome is simply the best."
+      },
+      {
+        "name": "Vibe Kanban",
+        "description": "Great tool to manage parallel work across multiple repositories. I use it for both personal and professional projects."
+      }
+    ]
+  }
+]

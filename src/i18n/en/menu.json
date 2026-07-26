@@ -1,0 +1,62 @@
+{
+  "main": [
+    {
+      "title": "About",
+      "path": "/about/"
+    },
+    {
+      "title": "Articles",
+      "path": "/articles/"
+    },
+    {
+      "title": "Works",
+      "path": "/works/"
+    },
+    {
+      "title": "Uses",
+      "path": "/uses/"
+    }
+  ],
+
+  "contact": {
+    "title": "Contact",
+    "path": "/contact/"
+  },
+
+  "footer": [
+    {
+      "name": "Resources",
+      "menus": [
+        {
+          "title": "Articles",
+          "path": "/articles/"
+        },
+        {
+          "title": "Works",
+          "path": "/works/"
+        },
+        {
+          "title": "Uses",
+          "path": "/uses/"
+        }
+      ]
+    },
+    {
+      "name": "Info",
+      "menus": [
+        {
+          "title": "About",
+          "path": "/about/"
+        },
+        {
+          "title": "Contact",
+          "path": "/contact/"
+        },
+        {
+          "title": "Privacy Policy",
+          "path": "/privacy/"
+        }
+      ]
+    }
+  ]
+}

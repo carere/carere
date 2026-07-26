@@ -1,0 +1,136 @@
+---
+import ChevronLeftIcon from "@/assets/icons/chevron-left.svg";
+import ChevronRightIcon from "@/assets/icons/chevron-right.svg";
+import { useTranslations, type Locale } from "@/i18n/index";
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+  lang?: Locale;
+}
+
+const { currentPage, totalPages, basePath, lang = "en" } = Astro.props;
+const t = useTranslations(lang);
+
+const getPageUrl = (page: number): string => {
+  if (page === 1) return basePath;
+  return `${basePath}/${page}`;
+};
+
+const pages: number[] = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+const getVisiblePages = (): number[] => {
+  if (totalPages <= 7) return pages;
+
+  if (currentPage <= 4) {
+    return [...pages.slice(0, 5), -1, totalPages];
+  }
+
+  if (currentPage >= totalPages - 3) {
+    return [1, -1, ...pages.slice(totalPages - 5)];
+  }
+
+  return [1, -1, currentPage - 1, currentPage, currentPage + 1, -1, totalPages];
+};
+
+const visiblePages: number[] = getVisiblePages();
+
+const linkBase =
+  "flex items-center justify-center min-w-[44px] h-[44px] px-sm py-xs rounded-lg border border-border text-text text-sm leading-none transition-[border-color,background-color] duration-[var(--transition-timing-base)] sm:text-base";
+---
+
+<nav class="my-3xl md:my-4xl" aria-label="Pagination">
+  <ul class="flex flex-wrap justify-center gap-xs sm:gap-sm">
+    <li>
+      <a
+        href={getPageUrl(1)}
+        class:list={[
+          linkBase,
+          "hover:border-primary hover:bg-bg-secondary",
+          {
+            "!opacity-40 pointer-events-none cursor-not-allowed":
+              currentPage === 1,
+          },
+        ]}
+        aria-label="Go to first page"
+      >
+        {t.ui.pagination.first}
+      </a>
+    </li>
+
+    <li>
+      <a
+        href={getPageUrl(currentPage - 1)}
+        class:list={[
+          linkBase,
+          "hover:border-primary hover:bg-bg-secondary",
+          {
+            "!opacity-40 pointer-events-none cursor-not-allowed":
+              currentPage === 1,
+          },
+        ]}
+        aria-label="Go to previous page"
+      >
+        <ChevronLeftIcon />
+      </a>
+    </li>
+
+    {
+      visiblePages.map((page) => (
+        <li>
+          <a
+            href={getPageUrl(page)}
+            class:list={[
+              linkBase,
+              {
+                "!bg-primary !border-primary !text-text-inverse pointer-events-none":
+                  currentPage === page,
+                "hover:border-primary hover:bg-bg-secondary":
+                  currentPage !== page,
+              },
+            ]}
+            aria-label={`Go to page ${page}`}
+            aria-current={currentPage === page ? "page" : undefined}
+          >
+            {page}
+          </a>
+        </li>
+      ))
+    }
+
+    <li>
+      <a
+        href={getPageUrl(currentPage + 1)}
+        class:list={[
+          linkBase,
+          "hover:border-primary hover:bg-bg-secondary",
+          {
+            "!opacity-40 pointer-events-none cursor-not-allowed":
+              currentPage === totalPages,
+          },
+        ]}
+        aria-label="Go to next page"
+      >
+        <ChevronRightIcon />
+      </a>
+    </li>
+
+    <li>
+      <a
+        href={getPageUrl(totalPages)}
+        class:list={[
+          linkBase,
+          "hover:border-primary hover:bg-bg-secondary",
+          {
+            "!opacity-40 pointer-events-none cursor-not-allowed":
+              currentPage === totalPages,
+          },
+        ]}
+        aria-label="Go to last page"
+      >
+        {t.ui.pagination.last}
+      </a>
+    </li>
+  </ul>
+</nav>

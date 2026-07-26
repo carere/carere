@@ -1,0 +1,28 @@
+{
+  "name": "portfolio",
+  "account_id": "f7e880a2223bc354486d9b057422fa0a",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-05-11",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "carere.dev",
+      "custom_domain": true
+    }
+  ],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": ["onboarding@carere.dev"],
+      "allowed_destination_addresses": ["contact@carere.dev"]
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import Container from "@/components/layout/Container.astro";
+import { useTranslations, type Locale } from "@/i18n/index";
+import { filterByLang } from "@/lib/collections";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const t = useTranslations(lang);
+
+const allReviews = await getCollection("reviews");
+const reviews = filterByLang(allReviews, lang);
+
+const renderedReviews = await Promise.all(
+  reviews.map(async (review) => ({
+    ...review,
+    rendered: await render(review),
+  })),
+);
+---
+
+<section class="py-lg pb-2xl">
+  <Container>
+    <h2
+      class="mb-xl md:mb-2xl text-[clamp(var(--font-size-md),4vw,var(--font-size-xl))] font-medium leading-(--lh-normal) text-center"
+    >
+      {t.ui.reviews.heading}
+    </h2>
+  </Container>
+  <div class="reviews-slider relative w-full overflow-hidden">
+    <div class="slider-track flex gap-lg md:gap-xl w-fit">
+      {
+        [...renderedReviews, ...renderedReviews].map((review) => (
+          <div class="slider-item shrink-0 w-75 md:w-95 bg-bg-secondary rounded-2xl p-lg md:p-xl flex flex-col gap-lg">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="text-primary-light shrink-0"
+            >
+              <path
+                d="M11 7.5C11 9.433 9.433 11 7.5 11C7.06 11 6.64 10.92 6.25 10.77C6.09 11.16 6 11.57 6 12C6 14.21 7.79 16 10 16H10.5C10.78 16 11 16.22 11 16.5V18.5C11 18.78 10.78 19 10.5 19H10C6.13 19 3 15.87 3 12V7.5C3 5.57 4.57 4 6.5 4H7.5C9.43 4 11 5.57 11 7.5ZM21 7.5C21 9.433 19.433 11 17.5 11C17.06 11 16.64 10.92 16.25 10.77C16.09 11.16 16 11.57 16 12C16 14.21 17.79 16 20 16H20.5C20.78 16 21 16.22 21 16.5V18.5C21 18.78 20.78 19 20.5 19H20C16.13 19 13 15.87 13 12V7.5C13 5.57 14.57 4 16.5 4H17.5C19.43 4 21 5.57 21 7.5Z"
+                fill="currentColor"
+              />
+            </svg>
+            <blockquote class="text-text text-base md:text-md leading-(--lh-loose)">
+              <review.rendered.Content />
+            </blockquote>
+            <div class="flex items-center gap-md mt-auto">
+              <Image
+                src={review.data.avatar}
+                alt={review.data.author}
+                width={48}
+                height={48}
+                class="rounded-full"
+              />
+              <div class="flex flex-col">
+                <span class="text-text font-semibold text-sm">
+                  {review.data.author}
+                </span>
+                <span class="text-text-sub text-xs">{review.data.role}</span>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

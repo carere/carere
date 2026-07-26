@@ -1,0 +1,54 @@
+---
+export const prerender = false;
+
+import { actions } from "astro:actions";
+import type { Locale } from "@/i18n/index";
+import { useTranslations } from "@/i18n/index";
+import ContactForm from "@/components/sections/ContactForm.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Layout from "@/layouts/Layout.astro";
+
+const lang = (Astro.params.lang === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+
+let defaultValues = {};
+let serverError = "";
+
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+
+    defaultValues = {
+      inquiryType: (formData.get("inquiryType") as string) ?? "",
+      message: (formData.get("message") as string) ?? "",
+      name: (formData.get("name") as string) ?? "",
+      company: (formData.get("company") as string) ?? "",
+      email: (formData.get("email") as string) ?? "",
+      tel: (formData.get("tel") as string) ?? "",
+      privacy: formData.get("privacy") === "on",
+    };
+
+    const { error } = await actions.sendContactEmail(formData);
+
+    if (!error) {
+      return Astro.redirect(lang === "fr" ? "/fr/contact/complete/" : "/contact/complete/");
+    }
+
+    serverError = t.ui.contact.submit_error;
+  } catch {
+    serverError = t.ui.contact.submit_error;
+  }
+}
+---
+
+<Layout
+  title={t.ui.contact.page_title}
+  description={t.ui.contact.page_description}
+  lang={lang}
+>
+  <PageHero
+    title={t.ui.contact.page_title}
+    subtitle={t.ui.contact.page_subtitle}
+  />
+  <ContactForm lang={lang} defaultValues={defaultValues} serverError={serverError} />
+</Layout>

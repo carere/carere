@@ -1,0 +1,32 @@
+{
+  "name": "carere",
+  "version": "0.0.1",
+  "description": "Carere's personal website",
+  "author": "Carere",
+  "license": "MIT",
+  "packageManager": "bun@1.3.14",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "deploy": "wrangler deploy",
+    "deploy:preview": "wrangler versions upload",
+    "preview": "astro preview",
+    "lint": "biome lint --write .",
+    "format": "biome format --write .",
+    "check": "biome check ."
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^13.5.0",
+    "@astrojs/sitemap": "^3.7.2",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.1",
+    "lenis": "^1.3.23",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.15",
+    "@typescript/native-preview": "latest",
+    "wrangler": "4.90.0"
+  }
+}

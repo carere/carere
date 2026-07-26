@@ -1,0 +1,135 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+
+import type { Locale } from "@/i18n/index";
+import { useTranslations, getLocalePath } from "@/i18n/index";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import CTA from "@/components/sections/CTA.astro";
+import CategoryNavigation from "@/components/ui/CategoryNavigation.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Pagination from "@/components/ui/Pagination.astro";
+import ContentCard from "@/components/ui/ContentCard.astro";
+import { filterLiveArticles, stripLangPrefix } from "@/lib/collections";
+import Layout from "@/layouts/Layout.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const allArticles = filterLiveArticles(await getCollection("articles"));
+
+  return ["en", "fr"].flatMap((lang) => {
+    const langArticles = allArticles
+      .filter((a) => a.id.startsWith(`${lang}/`))
+      .sort(
+        (a, b) =>
+          new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+      );
+
+    // Collect all unique categories
+    const allCategories = [
+      ...new Set(langArticles.flatMap((a) => a.data.categories || [])),
+    ];
+
+    return allCategories.flatMap((cat) => {
+      const categoryId = cat.toLowerCase().replace(/\s+/g, "-");
+      const filtered = langArticles.filter((a) =>
+        a.data.categories?.some(
+          (c) => c.toLowerCase().replace(/\s+/g, "-") === categoryId,
+        ),
+      );
+
+      return paginate(filtered, {
+        params: { lang: lang === "en" ? undefined : lang, category: categoryId },
+        pageSize: 10,
+        props: { lang, currentCategory: categoryId },
+      });
+    });
+  });
+}) satisfies GetStaticPaths;
+
+type Props = {
+  page: Page<CollectionEntry<"articles">>;
+  lang: string;
+  currentCategory: string;
+};
+
+const { page, lang: langProp, currentCategory } = Astro.props;
+const lang = (langProp === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+
+const pageTitle = t.ui.articles.page_title;
+const basePath = getLocalePath("/articles", lang);
+
+// Collect all unique categories for this language
+const allArticlesForLang = filterLiveArticles(await getCollection("articles"));
+const langArticles = allArticlesForLang.filter((a) =>
+  a.id.startsWith(`${lang}/`),
+);
+const allCategories = [
+  ...new Set(langArticles.flatMap((a) => a.data.categories || [])),
+].sort();
+const categoryItems = allCategories.map((c) => ({
+  id: c.toLowerCase().replace(/\s+/g, "-"),
+  title: c,
+}));
+---
+
+<Layout
+  title={pageTitle}
+  description={t.ui.articles.page_description}
+  lang={lang}
+>
+  <PageHero
+    title={t.ui.articles.page_title}
+    subtitle={t.ui.articles.page_subtitle}
+  />
+
+  <Section class="pt-md">
+    <Container>
+      {
+        page.data.length > 0 && (
+          <CategoryNavigation
+            categories={categoryItems}
+            currentCategory={currentCategory}
+            basePath={basePath}
+            lang={lang}
+          />
+        )
+      }
+
+      <div
+        class="grid grid-cols-1 gap-2xl mt-3xl sm:grid-cols-2 sm:gap-xl md:grid-cols-3 md:gap-2xl"
+      >
+        {
+          page.data.map((article) => (
+            <ContentCard
+              title={article.data.title}
+              subtitle={article.data.author}
+              categoryTitle={article.data.categories?.[0] || ""}
+              image={article.data.image}
+              href={getLocalePath(
+                `/articles/${stripLangPrefix(article.id)}`,
+                lang,
+              )}
+              draft={article.data.draft}
+            />
+          ))
+        }
+      </div>
+
+      {
+        page.lastPage > 1 && (
+          <Pagination
+            currentPage={page.currentPage}
+            totalPages={page.lastPage}
+            basePath={`${basePath}/category/${currentCategory}`}
+            lang={lang}
+          />
+        )
+      }
+    </Container>
+  </Section>
+
+  <CTA lang={lang} />
+</Layout>

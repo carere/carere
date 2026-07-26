@@ -1,0 +1,97 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import Badge from "@/components/ui/Badge.astro";
+import LinkText from "@/components/ui/LinkText.astro";
+import SectionTitle from "@/components/ui/SectionTitle.astro";
+import { useTranslations, getLocalePath, type Locale } from "@/i18n/index";
+import {
+  filterByLang,
+  filterLiveArticles,
+  stripLangPrefix,
+} from "@/lib/collections";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const t = useTranslations(lang);
+
+const allArticles = await getCollection("articles");
+const articles = filterLiveArticles(filterByLang(allArticles, lang))
+  .sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+  )
+  .slice(0, 4);
+---
+
+{articles.length > 0 && (
+  <Section background="primary">
+    <Container>
+      <div class="md:grid md:grid-cols-[20%_1fr] md:gap-x-4xl">
+        <div
+          class="flex items-center justify-between gap-lg mb-3xl md:sticky md:top-4xl md:flex-col md:items-start md:self-start md:grow md:mb-0 md:min-w-fit"
+        >
+          <SectionTitle
+            title={t.ui.recent_articles.section_title}
+            subtitle={t.ui.recent_articles.section_subtitle}
+          />
+          <LinkText
+            href={getLocalePath("/articles/", lang)}
+            ariaLabel={t.ui.articles.view_all}
+          >
+            {t.ui.articles.view_all}
+          </LinkText>
+        </div>
+
+        <div class="grid gap-3xl sm:gap-5xl">
+          {
+            articles.map((article) => (
+                <article class="group fade" data-animate>
+                  <a
+                    class="transition-transform duration-(--transition-timing-slow) hover:-translate-y-1"
+                    href={getLocalePath(
+                      `/articles/${stripLangPrefix(article.id)}`,
+                      lang,
+                    )}
+                  >
+                    <div class="relative w-full overflow-hidden rounded-3xl">
+                      <Image
+                        src={article.data.image}
+                        alt={article.data.title}
+                        class="w-full h-auto object-cover aspect-16/10 transition-transform duration-(--transition-timing-slower) group-hover:scale-105"
+                      />
+                      <Badge label={article.data.categories?.[0] || ""} variant="overlay" />
+                      {article.data.draft && (
+                        <div class="absolute top-md right-md">
+                          <Badge label={t.ui.articles.draft_badge} variant="draft" />
+                        </div>
+                      )}
+                    </div>
+                    <div class="flex flex-col gap-sm mt-lg">
+                      <h3 class="text-text text-lg md:text-xl font-medium leading-(--lh-snug)">
+                        {article.data.title}
+                      </h3>
+                      <p class="text-text-sub text-sm leading-(--lh-snug)">
+                        {article.data.author}
+                      </p>
+                      <p class="text-text-sub text-md md:text-base leading-(--lh-loose)">
+                        {article.data.description}
+                      </p>
+                      <span class="self-start inline-block mt-md px-lg py-sm border border-border rounded-full bg-[linear-gradient(to_right,var(--color-primary)_50%,transparent_50%)] bg-size-[200%_100%] bg-right text-text text-sm font-normal leading-[1.6] text-center transition-[background-position,color,border-color] duration-(--transition-timing-slow) group-hover:bg-left group-hover:text-text-inverse group-hover:border-primary">
+                        {t.ui.recent_articles.view_full}
+                      </span>
+                    </div>
+                  </a>
+                </article>
+            ))
+          }
+        </div>
+      </div>
+    </Container>
+  </Section>
+)}

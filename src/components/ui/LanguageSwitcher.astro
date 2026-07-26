@@ -1,0 +1,63 @@
+---
+import type { Locale } from "@/i18n/index";
+import {
+  SUPPORTED_LOCALES,
+  DEFAULT_LOCALE,
+  useTranslations,
+} from "@/i18n/index";
+
+interface Props {
+  lang: Locale;
+  variant?: "header" | "footer";
+}
+
+const { lang, variant = "header" } = Astro.props;
+const t = useTranslations(lang);
+const currentPath = Astro.url.pathname;
+const isFooter = variant === "footer";
+
+function getAlternateUrl(targetLang: Locale): string {
+  let path = currentPath;
+  for (const locale of SUPPORTED_LOCALES) {
+    if (locale !== DEFAULT_LOCALE) {
+      if (path.startsWith(`/${locale}/`)) {
+        path = path.slice(locale.length + 1);
+        break;
+      }
+      if (path === `/${locale}`) {
+        path = "/";
+        break;
+      }
+    }
+  }
+  if (targetLang === DEFAULT_LOCALE) return path;
+  return `/${targetLang}${path}`;
+}
+---
+
+<div class="flex items-center gap-xs text-sm">
+  {
+    SUPPORTED_LOCALES.map((locale, index) => (
+      <>
+        {index > 0 && <span class={isFooter ? "text-text-inverse-light dark:text-text-sub" : "text-text-light"}>|</span>}
+        <a
+          href={getAlternateUrl(locale)}
+          class:list={[
+            "transition-colors duration-[var(--transition-timing-fast)]",
+            locale === lang
+              ? isFooter
+                ? "text-text-inverse-lightest dark:text-text font-medium pointer-events-none"
+                : "text-text font-medium pointer-events-none"
+              : isFooter
+                ? "text-text-inverse-light dark:text-text-sub hover:text-text-inverse dark:hover:text-text"
+                : "text-text-light hover:text-text",
+          ]}
+          aria-label={`Switch to ${locale === "en" ? "English" : "French"}`}
+          aria-current={locale === lang ? "true" : undefined}
+        >
+          {t.ui.language_switcher[locale]}
+        </a>
+      </>
+    ))
+  }
+</div>

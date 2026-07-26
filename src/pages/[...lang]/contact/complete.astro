@@ -1,0 +1,54 @@
+---
+import type { Locale } from "@/i18n/index";
+import { useTranslations, getLocalePath } from "@/i18n/index";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import LinkButton from "@/components/ui/LinkButton.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Layout from "@/layouts/Layout.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: undefined } }, { params: { lang: "fr" } }];
+}
+
+const lang = (Astro.params.lang === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+---
+
+<Layout
+  title={t.ui.contact_complete.page_title}
+  description={t.ui.contact_complete.page_description}
+  lang={lang}
+>
+  <PageHero
+    title={t.ui.contact_complete.page_title}
+    subtitle={t.ui.contact_complete.page_subtitle}
+  />
+
+  <Section>
+    <Container>
+      <div
+        class="flex flex-col items-center gap-3xl mx-auto text-center md:gap-4xl"
+      >
+        <div class="flex flex-col gap-xl">
+          <p
+            class="text-text text-lg font-medium leading-(--lh-normal) md:text-xl"
+          >
+            {t.ui.contact_complete.thank_you}
+          </p>
+          <p class="text-text-sub text-base leading-(--lh-loose) md:text-md">
+            {t.ui.contact_complete.response_time_line1}<br />
+            {t.ui.contact_complete.response_time_line2}
+          </p>
+        </div>
+        <LinkButton
+          href={getLocalePath("/", lang)}
+          variant="solid"
+          size="large"
+        >
+          {t.ui.contact_complete.return_home}
+        </LinkButton>
+      </div>
+    </Container>
+  </Section>
+</Layout>

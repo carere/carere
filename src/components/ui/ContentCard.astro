@@ -1,0 +1,69 @@
+---
+import { Image } from "astro:assets";
+
+import Badge from "@/components/ui/Badge.astro";
+
+interface Props {
+  title: string;
+  subtitle: string;
+  categoryTitle: string;
+  image: ImageMetadata;
+  href: string;
+  external?: boolean;
+  draft?: boolean;
+  date?: string;
+  lang?: string;
+}
+
+const {
+  title,
+  subtitle,
+  categoryTitle,
+  image,
+  href,
+  external = false,
+  draft = false,
+  date,
+  lang = "en",
+} = Astro.props;
+---
+
+<article class="group">
+  <a
+    href={href}
+    class="block"
+    {...external ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+  >
+    <div class="relative w-full overflow-hidden rounded-4xl">
+      <Image
+        src={image}
+        alt={title}
+        class="w-full h-auto object-cover aspect-3/2 transition-transform duration-(--transition-timing-slow) group-hover:scale-105"
+      />
+      {
+        draft && (
+          <div class="absolute top-md right-md">
+            <Badge label="Draft" variant="draft" />
+          </div>
+        )
+      }
+    </div>
+    <div class="flex flex-col gap-xs mt-md">
+      <h3 class="text-text text-md font-medium leading-(--lh-snug) sm:text-lg">
+        {title}
+      </h3>
+      <p class="text-text-sub text-sm leading-(--lh-snug)">{subtitle}</p>
+      {
+        date && (
+          <p class="text-text-light text-xs">
+            {new Date(date + "-01").toLocaleDateString(
+              lang === "fr" ? "fr-FR" : "en-US",
+              { year: "numeric", month: "short" },
+            )}
+          </p>
+        )
+      }
+      <Badge label={categoryTitle} class="mt-xs" />
+    </div>
+  </a>
+</article>

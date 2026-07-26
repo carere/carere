@@ -1,0 +1,53 @@
+---
+import { useTranslations, type Locale } from "@/i18n/index";
+import type { Category } from "@/types/index.d.ts";
+
+interface Props {
+  categories: Category[];
+  currentCategory?: string;
+  basePath: string;
+  subPath?: string;
+  allLabel?: string;
+  lang?: Locale;
+}
+
+const { categories, currentCategory, basePath, lang = "en", subPath = "category" } = Astro.props;
+const t = useTranslations(lang);
+const allLabel = Astro.props.allLabel || t.ui.category_nav.all;
+---
+
+<nav>
+  <ul class="flex flex-wrap gap-sm sm:gap-md">
+    <li>
+      <a
+        href={basePath}
+        class:list={[
+          "inline-block px-md py-xs rounded-full border border-border text-text-sub text-sm leading-[var(--lh-tight)] uppercase transition-[border-color,color] duration-[var(--transition-timing-base)] hover:border-primary hover:text-text sm:text-base",
+          {
+            "!bg-primary !border-primary !text-text-inverse": !currentCategory,
+          },
+        ]}
+      >
+        {allLabel}
+      </a>
+    </li>
+    {
+      categories.map((category) => (
+        <li>
+          <a
+            href={`${basePath}/${subPath}/${category.id}`}
+            class:list={[
+              "inline-block px-md py-xs rounded-full border border-border text-text-sub text-sm leading-[var(--lh-tight)] uppercase transition-[border-color,color] duration-[var(--transition-timing-base)] hover:border-primary hover:text-text sm:text-base",
+              {
+                "!bg-primary !border-primary !text-text-inverse":
+                  currentCategory === category.id,
+              },
+            ]}
+          >
+            {category.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

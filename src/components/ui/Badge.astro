@@ -1,0 +1,24 @@
+---
+interface Props {
+  label: string;
+  variant?: "default" | "overlay" | "open-source" | "draft";
+  class?: string;
+}
+
+const { label, variant = "default", class: className } = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  default:
+    "inline-block self-start px-md py-xs bg-bg-secondary text-text-sub text-xs font-normal leading-(--lh-tight) uppercase tracking-[0.02em] rounded-full",
+  overlay:
+    "absolute top-md left-md px-md py-xs bg-[rgba(255,255,255,0.7)] text-text text-xs font-medium leading-(--lh-tight) uppercase tracking-[0.02em] rounded-full",
+  "open-source":
+    "inline-block self-start px-md py-xs bg-status-success-bg text-status-success text-xs font-medium leading-(--lh-tight) uppercase tracking-[0.02em] rounded-full",
+  draft:
+    "inline-block self-start px-md py-xs bg-status-warning-bg text-status-warning text-xs font-medium leading-(--lh-tight) uppercase tracking-[0.02em] rounded-full",
+};
+---
+
+<span class:list={[className, variantClasses[variant]]}>
+  {label}
+</span>

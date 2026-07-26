@@ -1,0 +1,19 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  class?: string;
+}
+
+const { title, subtitle, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={["flex flex-col gap-xs md:gap-sm", className]} {...rest}>
+  <h2 class="text-text text-2xl font-medium leading-(--lh-none) md:text-3xl">
+    {title}
+  </h2>
+  <span
+    class="text-text-sub text-sm font-normal leading-(--lh-normal) md:text-base"
+    >{subtitle}</span
+  >
+</div>

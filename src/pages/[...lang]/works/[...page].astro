@@ -1,0 +1,102 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+
+import type { Locale } from "@/i18n/index";
+import { useTranslations, getLocalePath } from "@/i18n/index";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import CTA from "@/components/sections/CTA.astro";
+import CategoryNavigation from "@/components/ui/CategoryNavigation.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Pagination from "@/components/ui/Pagination.astro";
+import ContentCard from "@/components/ui/ContentCard.astro";
+import { resolveCategoryTitle } from "@/lib/collections";
+import type { CategoryData } from "@/types/index.d.ts";
+import Layout from "@/layouts/Layout.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const allWorks = await getCollection("works");
+
+  return ["en", "fr"].flatMap((lang) => {
+    const langWorks = allWorks
+      .filter((w) => w.id.startsWith(`${lang}/`))
+      .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+    return paginate(langWorks, {
+      params: { lang: lang === "en" ? undefined : lang },
+      pageSize: 10,
+      props: { lang },
+    });
+  });
+}) satisfies GetStaticPaths;
+
+type Props = {
+  page: Page<CollectionEntry<"works">>;
+  lang: string;
+};
+
+const { page, lang: langProp } = Astro.props;
+const lang = (langProp === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+const typedCategoryData = t.category as CategoryData;
+
+const pageTitle =
+  page.currentPage === 1
+    ? t.ui.works.page_title
+    : `${t.ui.works.page_title} (Page ${page.currentPage})`;
+
+const categories = t.category.work;
+const basePath = getLocalePath("/works", lang);
+---
+
+<Layout title={pageTitle} description={t.ui.works.page_description} lang={lang}>
+  <PageHero title={t.ui.works.page_title} subtitle={t.ui.works.page_subtitle} />
+
+  <Section class="pt-md">
+    <Container>
+      <CategoryNavigation
+        categories={categories}
+        basePath={basePath}
+        lang={lang}
+      />
+
+      <div
+        class="grid grid-cols-1 gap-2xl mt-3xl sm:grid-cols-2 sm:gap-xl md:grid-cols-3 md:gap-2xl"
+      >
+        {
+          page.data.map((work) => (
+            <ContentCard
+              title={work.data.title}
+              subtitle={work.body}
+              categoryTitle={resolveCategoryTitle(
+                typedCategoryData,
+                "work",
+                work.data.type,
+              )}
+              image={work.data.image}
+              href={work.data.url}
+              external
+              date={work.data.date}
+              lang={lang}
+            />
+          ))
+        }
+      </div>
+
+      {
+        page.lastPage > 1 && (
+          <Pagination
+            currentPage={page.currentPage}
+            totalPages={page.lastPage}
+            basePath={basePath}
+            lang={lang}
+          />
+        )
+      }
+    </Container>
+  </Section>
+
+  <CTA lang={lang} />
+</Layout>

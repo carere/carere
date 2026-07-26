@@ -1,0 +1,118 @@
+{
+  "hero": {
+    "heading": "Ingénieur fullstack, open source enthousiaste, créateur insatiable.",
+    "subheading": "Basé en France avec plus de 15 ans d'expérience dans le développement web, je conçois des logiciels fiables et je rends à la communauté via l'open source. Loin de l'écran, je nourris ma créativité à travers la musique, les voyages et la science-fiction.",
+    "download_cv": "Télécharger le CV"
+  },
+  "cta": {
+    "title": "Contact",
+    "subtitle": "Contactez-nous",
+    "description": "Que vous ayez une question, besoin d'une consultation ou souhaitiez demander un devis, n'hésitez pas à nous contacter.",
+    "items": [
+      "J'aimerai créer un site web ou une application",
+      "Je souhaite discuter des méthodologies de projet et des estimations budgétaires",
+      "Je souhaite une consultation sur un choix technologique ou d'architecture",
+      "Je souhaite établir un partenariat à long terme, etc."
+    ],
+    "button": "Contactez-nous"
+  },
+  "works": {
+    "view_all": "Tout voir",
+    "back_to_list": "Retour a la liste",
+    "page_title": "Realisations",
+    "page_subtitle": "Nos realisations",
+    "page_description": "Parcourez notre portfolio de projets realises.",
+    "category_label": "Categorie"
+  },
+  "recent_works": {
+    "section_title": "Travaux recents",
+    "section_subtitle": "Derniers projets",
+    "view_all": "Tout voir"
+  },
+  "recent_articles": {
+    "section_title": "Articles recents",
+    "section_subtitle": "Derniers articles",
+    "view_full": "Lire l'article"
+  },
+  "contact": {
+    "page_title": "Contact",
+    "page_subtitle": "Contactez-nous",
+    "page_description": "Pour toute question sur nos services, demande de devis ou autre demande, n'hesitez pas a nous contacter. Un representant vous repondra rapidement.",
+    "form_intro": "Pour des consultations sur nos services, des demandes de devis ou toute question, n'hesitez pas a nous contacter.",
+    "inquiry_type": "Type de demande",
+    "inquiry_options": [
+      { "value": "project", "label": "Demande de projet ou consultation" },
+      { "value": "quote", "label": "Demande de devis" },
+      { "value": "partnership", "label": "Proposition ou demande de partenariat" },
+      { "value": "other", "label": "Autres demandes" }
+    ],
+    "message_label": "Message",
+    "message_placeholder": "Veuillez fournir des details sur votre projet, votre budget et le calendrier souhaite pour faciliter notre proposition.",
+    "name_label": "Nom complet",
+    "name_placeholder": "Jean Dupont",
+    "company_label": "Nom de l'entreprise",
+    "company_placeholder": "Exemple SARL",
+    "email_label": "Adresse e-mail",
+    "email_placeholder": "exemple@entreprise.com",
+    "phone_label": "Numero de telephone",
+    "phone_placeholder": "+33 1 23 45 67 89",
+    "privacy_consent": "J'ai lu la {link} et j'accepte ses termes",
+    "privacy_link_text": "Politique de confidentialite",
+    "submit": "Envoyer",
+    "submit_error": "Une erreur est survenue. Veuillez réessayer.",
+    "submitting": "Envoi en cours..."
+  },
+  "contact_complete": {
+    "page_title": "Demande envoyee",
+    "page_subtitle": "Demande envoyee",
+    "page_description": "Merci pour votre demande. Un representant vous recontactera sous peu.",
+    "thank_you": "Merci pour votre demande.",
+    "response_time_line1": "Un representant vous contactera dans les 2 jours ouvrables.",
+    "response_time_line2": "Veuillez patienter un instant.",
+    "return_home": "Retour a l'accueil"
+  },
+  "not_found": {
+    "page_title": "404 Page introuvable",
+    "page_subtitle": "Page introuvable",
+    "description_1": "La page que vous recherchez est introuvable.",
+    "description_2": "La page a peut-etre ete deplacee ou supprimee, ou l'URL est incorrecte.",
+    "return_home": "Retour a l'accueil"
+  },
+  "articles": {
+    "page_title": "Articles",
+    "page_subtitle": "Mes articles",
+    "page_description": "Explorez mes articles sur le developpement web, les applications mobiles, le design UI/UX et la strategie numerique. Des perspectives et connaissances issues de projets concrets.",
+    "view_all": "Tout voir",
+    "no_articles_title": "Pas encore d'articles",
+    "no_articles_description": "Restez a l'ecoute ! De nouveaux articles sur le developpement web, le design et la technologie arrivent bientot.",
+    "browse_works": "Parcourir mes realisations",
+    "draft_badge": "Brouillon"
+  },
+  "uses_page": {
+    "page_title": "Outils",
+    "page_subtitle": "Les outils sur lesquels je compte, les gadgets que j'adore et tout ce que je recommande.",
+    "page_description": "Les outils sur lesquels je compte, les gadgets que j'adore et tout ce que je recommande pour le développement et la productivité."
+  },
+  "reviews": {
+    "heading": "Ce qu'ils en disent"
+  },
+  "about_page": {
+    "follow_me": "Me suivre",
+    "follow_on": "Suivre sur {platform}"
+  },
+  "footer": {
+    "toggle_dark_mode": "Passer en mode sombre",
+    "toggle_light_mode": "Passer en mode clair"
+  },
+  "pagination": {
+    "first": "Debut",
+    "last": "Fin"
+  },
+  "category_nav": {
+    "all": "Tout"
+  },
+  "language_switcher": {
+    "en": "EN",
+    "fr": "FR"
+  }
+}

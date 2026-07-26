@@ -1,0 +1,134 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+
+import type { Locale } from "@/i18n/index";
+import { useTranslations, getLocalePath } from "@/i18n/index";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import CTA from "@/components/sections/CTA.astro";
+import CategoryNavigation from "@/components/ui/CategoryNavigation.astro";
+import LinkButton from "@/components/ui/LinkButton.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Pagination from "@/components/ui/Pagination.astro";
+import ContentCard from "@/components/ui/ContentCard.astro";
+import { filterLiveArticles, stripLangPrefix } from "@/lib/collections";
+import Layout from "@/layouts/Layout.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const allArticles = filterLiveArticles(await getCollection("articles"));
+
+  return ["en", "fr"].flatMap((lang) => {
+    const langArticles = allArticles
+      .filter((a) => a.id.startsWith(`${lang}/`))
+      .sort(
+        (a, b) =>
+          new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+      );
+
+    return paginate(langArticles, {
+      params: { lang: lang === "en" ? undefined : lang },
+      pageSize: 10,
+      props: { lang },
+    });
+  });
+}) satisfies GetStaticPaths;
+
+type Props = {
+  page: Page<CollectionEntry<"articles">>;
+  lang: string;
+};
+
+const { page, lang: langProp } = Astro.props;
+const lang = (langProp === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+const pageTitle =
+  page.currentPage === 1
+    ? t.ui.articles.page_title
+    : `${t.ui.articles.page_title} (Page ${page.currentPage})`;
+
+const basePath = getLocalePath("/articles", lang);
+
+// Collect all unique categories from all articles for this language
+const allArticlesForLang = filterLiveArticles(await getCollection("articles"));
+const langArticles = allArticlesForLang.filter((a) => a.id.startsWith(`${lang}/`));
+const allCategories = [...new Set(langArticles.flatMap((a) => a.data.categories || []))].sort();
+const categoryItems = allCategories.map((b) => ({
+  id: b.toLowerCase().replace(/\s+/g, "-"),
+  title: b,
+}));
+---
+
+<Layout
+  title={pageTitle}
+  description={t.ui.articles.page_description}
+  lang={lang}
+>
+  <PageHero
+    title={t.ui.articles.page_title}
+    subtitle={t.ui.articles.page_subtitle}
+  />
+
+  <Section class="pt-md">
+    <Container>
+      {
+        page.data.length > 0 ? (
+          <>
+            <CategoryNavigation
+              categories={categoryItems}
+              basePath={basePath}
+              lang={lang}
+            />
+          <div class="grid grid-cols-1 gap-2xl mt-3xl sm:grid-cols-2 sm:gap-xl md:grid-cols-3 md:gap-2xl">
+            {page.data.map((article) => (
+              <ContentCard
+                title={article.data.title}
+                subtitle={article.data.author}
+                categoryTitle={
+                  article.data.categories?.[0] || ""
+                }
+                image={article.data.image}
+                href={getLocalePath(
+                  `/articles/${stripLangPrefix(article.id)}`,
+                  lang,
+                )}
+                draft={article.data.draft}
+              />
+            ))}
+          </div>
+          </>
+        ) : (
+          <div class="flex flex-col items-center justify-center py-5xl text-center">
+            <h2 class="text-text text-xl md:text-2xl font-medium mb-md">
+              {t.ui.articles.no_articles_title}
+            </h2>
+            <p class="text-text-sub text-base md:text-md leading-(--lh-loose) max-w-prose mb-xl">
+              {t.ui.articles.no_articles_description}
+            </p>
+            <LinkButton
+              href={getLocalePath("/works", lang)}
+              variant="solid"
+              size="large"
+            >
+              {t.ui.articles.browse_works}
+            </LinkButton>
+          </div>
+        )
+      }
+
+      {
+        page.lastPage > 1 && (
+          <Pagination
+            currentPage={page.currentPage}
+            totalPages={page.lastPage}
+            basePath={basePath}
+            lang={lang}
+          />
+        )
+      }
+    </Container>
+  </Section>
+
+  <CTA lang={lang} />
+</Layout>

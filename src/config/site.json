@@ -1,0 +1,32 @@
+{
+  "site": {
+    "title": "Carere",
+    "description": "Official website of Carere, providing digital software development",
+    "company_name": "Carere",
+    "og_image": "images/ogp.png",
+    "favicon": "images/favicon.svg",
+    "themeColor": "#B9B99D"
+  },
+
+  "settings": {
+    "header_height": "74px",
+    "header_height_mobile": "60px"
+  },
+
+  "google": {
+    "analytics": "G-XXXXXXXXX"
+  },
+
+  "social": {
+    "twitter_creator": "@carere_dev"
+  },
+
+  "company": {
+    "postal_code": "69004",
+    "address": "3 montée bonafous",
+    "city": "Lyon",
+    "country": "France",
+    "tel": "+33 7 69 57 78 63",
+    "email": "contact@carere.dev"
+  }
+}

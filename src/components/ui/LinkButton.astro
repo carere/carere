@@ -1,0 +1,55 @@
+---
+interface Props {
+  href: string;
+  variant?: "solid" | "solid-sub" | "outlined" | "ghost";
+  size?: "small" | "medium" | "large";
+  ariaLabel?: string;
+  class?: string;
+  target?: "_blank" | "_self";
+  fullWidth?: boolean;
+}
+
+const {
+  href,
+  target,
+  ariaLabel,
+  variant = "solid",
+  size = "medium",
+  fullWidth,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const sizeClasses: Record<string, string> = {
+  small: "text-base px-lg py-xs",
+  medium: "py-sm px-xl",
+  large: "py-[calc(var(--spacing-xs)*3)] px-2xl",
+};
+
+const variantClasses: Record<string, string> = {
+  solid:
+    "text-text-inverse bg-[linear-gradient(to_right,var(--color-bg)_50%,var(--color-primary)_50%)] border-primary hover:text-text hover:border-primary focus-within:text-text focus-within:border-primary",
+  "solid-sub":
+    "text-text bg-[linear-gradient(to_right,var(--color-primary)_50%,var(--color-bg)_50%)] border-bg hover:text-text-inverse hover:border-bg focus-within:text-text-inverse focus-within:border-bg",
+  outlined:
+    "text-text bg-[linear-gradient(to_right,var(--color-primary)_50%,transparent_50%)] border-border hover:text-text-inverse hover:border-primary focus-within:text-text-inverse focus-within:border-primary",
+  ghost: "",
+};
+---
+
+<a
+  {href}
+  class:list={[
+    className,
+    "relative inline-block rounded-full border-2 border-solid bg-[length:200%_100%] bg-right text-base font-normal tracking-[0.02em] text-center no-underline transition-[background-position,color,border-color] duration-[var(--transition-timing-slow)] hover:bg-left focus-within:bg-left",
+    sizeClasses[size],
+    variantClasses[variant],
+  ]}
+  style={{ width: fullWidth ? "100%" : "fit-content" }}
+  aria-label={ariaLabel}
+  target={target}
+  rel={target === "_blank" ? "noopener noreferrer" : ""}
+  {...rest}
+>
+  <slot />
+</a>

@@ -1,0 +1,23 @@
+---
+interface Props {
+  background?: "primary" | "secondary" | "inverse";
+  class?: string;
+  id?: string;
+}
+
+const { background = "primary", class: className, id, ...rest } = Astro.props;
+
+const bgClasses = {
+  primary: "bg-bg",
+  secondary: "bg-bg-secondary",
+  inverse: "bg-primary",
+};
+---
+
+<section
+  id={id}
+  class:list={["py-3xl md:py-4xl", bgClasses[background], className]}
+  {...rest}
+>
+  <slot />
+</section>

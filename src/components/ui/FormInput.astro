@@ -1,0 +1,32 @@
+---
+interface Props {
+  type: "text" | "email" | "tel" | "url" | "number";
+  id?: string;
+  name: string;
+  required?: boolean;
+  placeholder: string;
+  autocomplete?: string;
+  value?: string;
+}
+
+const {
+  type,
+  id,
+  name,
+  required = false,
+  placeholder,
+  autocomplete,
+  value,
+} = Astro.props;
+---
+
+<input
+  type={type}
+  id={id}
+  name={name}
+  class="w-full p-md border border-border rounded-xl bg-bg text-text text-base leading-(--lh-normal) transition-[border-color] duration-(--transition-timing-base) placeholder:text-text-light focus:border-primary"
+  required={required}
+  placeholder={placeholder}
+  autocomplete={autocomplete}
+  value={value}
+/>

@@ -1,0 +1,78 @@
+---
+import { Image } from "astro:assets";
+import Container from "@/components/layout/Container.astro";
+import SocialLinks from "@/components/ui/SocialLinks.astro";
+import LinkButton from "@/components/ui/LinkButton.astro";
+import kevinPortrait from "@/assets/kevin.jpeg";
+import { useTranslations, type Locale } from "@/i18n/index";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const t = useTranslations(lang);
+const fileId =
+  lang === "en"
+    ? "1_rSwr4m2r2w1lx9yKAMC6aURsyfQ-6lBaal5on9vekQ"
+    : "1vHhA8hC6iJc6A9-fHGFCjQfxaHwPTAhoWLy6QGBYAjo";
+---
+
+<section class="pt-4xl pb-3xl md:pt-5xl md:pb-4xl">
+  <Container>
+    <div
+      class="grid grid-cols-1 gap-2xl md:grid-cols-[1fr_auto] md:gap-3xl md:items-start"
+    >
+      <!-- LEFT COLUMN -->
+      <div class="flex flex-col gap-lg md:gap-xl">
+        <h1
+          class="text-text text-[clamp(var(--font-size-2xl),5vw,var(--font-size-5xl))] font-medium leading-(--lh-tight) tracking-[0.02em] fade"
+          data-animate
+          data-animate-delay="0"
+        >
+          {t.ui.hero.heading}
+        </h1>
+        <p
+          class="text-text-sub text-base md:text-md leading-(--lh-relaxed) max-w-(--container-sm) fade"
+          data-animate
+          data-animate-delay="200"
+        >
+          {t.ui.hero.subheading}
+        </p>
+        <div class="fade" data-animate data-animate-delay="400">
+          <SocialLinks
+            class="flex gap-md"
+            linkClass="flex items-center justify-center text-text-light transition-colors duration-(--transition-timing-base) hover:text-text"
+          />
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Portrait + CV Download -->
+      <div
+        class="flex flex-col items-center gap-md fade"
+        data-animate
+        data-animate-delay="200"
+      >
+        <div
+          class="w-full max-w-96 mx-auto md:mx-0 rounded-4xl bg-bg-secondary overflow-hidden aspect-square"
+        >
+          <Image
+            src={kevinPortrait}
+            alt={t.ui.hero.heading}
+            class="w-full h-full object-cover"
+            widths={[384, 640]}
+            sizes="(max-width: 900px) 384px, 384px"
+          />
+        </div>
+        <LinkButton
+          href={`https://docs.google.com/document/d/${fileId}/export?format=pdf`}
+          variant="outlined"
+          size="small"
+          target="_blank"
+        >
+          {t.ui.hero.download_cv}
+        </LinkButton>
+      </div>
+    </div>
+  </Container>
+</section>

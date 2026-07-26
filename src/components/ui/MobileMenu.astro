@@ -1,0 +1,121 @@
+---
+import EllipsisIcon from "@/assets/icons/ellipsis-vertical.svg";
+import CloseIcon from "@/assets/icons/x.svg";
+import LinkButton from "@/components/ui/LinkButton.astro";
+import { useTranslations, getLocalePath, type Locale } from "@/i18n/index";
+import site from "@/config/site.json";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const t = useTranslations(lang);
+
+const mainMenu = t.menu.main;
+const contactMenu = t.menu.contact;
+
+const headerHeight = site.settings.header_height_mobile;
+---
+
+<button
+  class="menu-button grid place-items-center w-10 h-10 -mr-sm bg-none z-(--z-index-fixed) min-[1000px]:hidden"
+  type="button"
+  aria-label="Toggle Menu"
+  aria-expanded="false"
+>
+  <EllipsisIcon class="menu-icon -open" />
+  <CloseIcon class="menu-icon -close" />
+</button>
+<div
+  class="menu fixed left-0 z-1000 w-full flex flex-col gap-md px-xl py-xl bg-bg-alt opacity-0 overflow-y-hidden invisible transition-[transform,opacity,background-color,visibility] duration-(--transition-timing-slow) ease-linear will-change-[transform,opacity,background-color,visibility] min-[1000px]:hidden"
+  style={`top: ${headerHeight}; height: calc(100dvh - ${headerHeight})`}
+>
+  <nav
+    class="nav flex flex-col h-full opacity-0 invisible translate-y-2.5 transition-[opacity,transform,visibility] duration-(--transition-timing-slower) ease-(--ease-out-quart)"
+  >
+    <ul class="flex flex-col gap-sm">
+      {
+        mainMenu.map((menu) => (
+          <li>
+            <a
+              href={getLocalePath(menu.path, lang)}
+              class="block py-sm text-text text-lg font-normal leading-[1.1] tracking-[0.025em]"
+            >
+              {menu.title}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mt-auto flex flex-col gap-lg">
+      <LinkButton
+        href={getLocalePath(contactMenu.path, lang)}
+        ariaLabel={contactMenu.title}
+        fullWidth
+      >
+        {contactMenu.title}
+      </LinkButton>
+    </div>
+  </nav>
+</div>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const menuButton: HTMLElement | null =
+      document.querySelector(".menu-button");
+    const mobileMenu: HTMLElement | null = document.querySelector(".menu");
+    const menuLinks: NodeListOf<Element> | null =
+      document.querySelectorAll(".menu a");
+    let menuIsOpen: boolean = false;
+
+    // Reset menu open state on page navigation
+    mobileMenu?.classList.remove("is-open");
+    menuButton?.classList.remove("is-open");
+    document.body.style.overflow = "";
+
+    const toggleMenu = (e: Event) => {
+      e.stopPropagation();
+
+      mobileMenu?.classList.toggle("is-open");
+      menuButton?.classList.toggle("is-open");
+
+      document.body.style.overflow = menuIsOpen ? "" : "hidden";
+      menuIsOpen = !menuIsOpen;
+    };
+
+    menuButton?.addEventListener("click", (e) => toggleMenu(e));
+    menuLinks?.forEach((link) => {
+      link.addEventListener("click", (e) => toggleMenu(e));
+    });
+  });
+</script>
+
+<!-- Minimal style block for JS-toggled .is-open state classes and icon display toggling,
+     which require parent-state-dependent child selectors not achievable with Tailwind utilities -->
+<style>
+  .menu-icon.-close {
+    display: none;
+  }
+  .menu-button.is-open .menu-icon.-close {
+    display: revert;
+  }
+  .menu-icon.-open {
+    display: revert;
+  }
+  .menu-button.is-open .menu-icon.-open {
+    display: none;
+  }
+
+  .menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .menu.is-open .nav {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+</style>

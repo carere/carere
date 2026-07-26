@@ -1,0 +1,28 @@
+---
+import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
+
+interface Props {
+  href: string;
+  ariaLabel?: string;
+  class?: string;
+}
+
+const { href, ariaLabel, class: className } = Astro.props;
+---
+
+<a
+  href={href}
+  aria-label={ariaLabel}
+  class:list={[
+    "group flex items-center gap-sm text-text text-sm font-normal leading-[var(--lh-normal)] rounded-xl no-underline transition-colors duration-[var(--transition-timing-slow)] hover:text-primary md:text-base",
+    className,
+  ]}
+>
+  <slot />
+  <ArrowUpRightIcon
+    width={20}
+    height={20}
+    stroke="currentColor"
+    class="transition-transform duration-(--transition-timing-slow) group-hover:rotate-45"
+  />
+</a>

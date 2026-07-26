@@ -1,0 +1,29 @@
+---
+import Container from "@/components/layout/Container.astro";
+
+interface Props {
+  title: string;
+  subtitle?: string;
+}
+
+const { title, subtitle } = Astro.props;
+---
+
+<section class="pt-4xl pb-2xl">
+  <Container>
+    <div class="flex flex-col gap-sm md:gap-md">
+      <h1
+        class="text-text text-[clamp(var(--font-size-3xl),6vw,var(--font-size-5xl))] leading-(--lh-none) tracking-[0.02em]"
+      >
+        {title}
+      </h1>
+      {
+        subtitle && (
+          <span class="text-text-sub text-base leading-(--lh-normal) tracking-widest md:text-md">
+            {subtitle}
+          </span>
+        )
+      }
+    </div>
+  </Container>
+</section>

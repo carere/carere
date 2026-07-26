@@ -1,0 +1,180 @@
+---
+import { ClientRouter } from "astro:transitions";
+import { fade } from "astro:transitions";
+
+import PostHog from "@/components/posthog.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Header from "@/components/layout/Header.astro";
+import {
+  useTranslations,
+  getAlternateLangUrls,
+  type Locale,
+} from "@/i18n/index";
+import site from "@/config/site.json";
+
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  noindex?: boolean;
+  description: string;
+  ogImage?: string;
+  articleDate?: Date;
+  lang?: Locale;
+}
+
+const {
+  title,
+  noindex,
+  description,
+  ogImage,
+  articleDate,
+  lang = "en",
+} = Astro.props;
+const t = useTranslations(lang);
+const siteConfig = site;
+
+const headerHeight = siteConfig.settings.header_height;
+const headerHeightMobile = siteConfig.settings.header_height_mobile;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const siteLang = lang;
+const twitterCreator = String(siteConfig.social.twitter_creator);
+const defaultOgImage = String(siteConfig.site.og_image);
+const finalOgImage = ogImage || defaultOgImage;
+const finalOgImageUrl = new URL(finalOgImage, Astro.site).href;
+
+const alternateUrls = getAlternateLangUrls(Astro.url.pathname);
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteConfig.site.title,
+  url: Astro.site?.href,
+  logo: new URL(String(siteConfig.site.favicon), Astro.site).href,
+  description: siteConfig.site.description,
+  sameAs: [siteConfig.social.twitter_creator],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.site.title,
+  url: Astro.site?.href,
+  description: siteConfig.site.description,
+};
+---
+
+<!doctype html>
+<html
+  lang={siteLang}
+  transition:animate={fade({ duration: "var(--transition-timing-slow)" })}
+  style={`scroll-padding-top: ${headerHeightMobile};`}
+  class={`md:![scroll-padding-top:${headerHeight}]`}
+>
+  <head>
+    <PostHog />
+    <ClientRouter />
+    <script is:inline>
+      function applyTheme() {
+        const theme = (() => {
+          const stored = localStorage.getItem("theme");
+          if (stored === "dark" || stored === "light") return stored;
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        })();
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+
+        localStorage.setItem("theme", theme);
+      }
+
+      document.addEventListener("astro:after-swap", applyTheme);
+      applyTheme();
+    </script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title || siteConfig.site.title}</title>
+    <meta
+      name="description"
+      content={description || String(siteConfig.site.description)}
+    />
+    <link rel="canonical" href={canonicalURL.href} />
+
+    <!-- hreflang alternate links -->
+    {
+      alternateUrls.map((alt) => (
+        <link
+          rel="alternate"
+          hreflang={alt.lang}
+          href={new URL(alt.href, Astro.site).href}
+        />
+      ))
+    }
+
+    <!-- Favicon -->
+    <link rel="icon" href={`/${siteConfig.site.favicon}`} />
+    <link rel="apple-touch-icon" href={`/${siteConfig.site.favicon}`} />
+    <meta name="theme-color" content={String(siteConfig.site.themeColor)} />
+
+    <!-- OGP -->
+    <meta name="title" content={title} />
+    <meta property="og:type" content={articleDate ? "article" : "website"} />
+    <meta property="og:title" content={title} />
+    <meta
+      property="og:description"
+      content={description || String(siteConfig.site.description)}
+    />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:site_name" content={String(siteConfig.site.title)} />
+    <meta property="og:image" content={finalOgImageUrl} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:creator" content={twitterCreator} />
+    <meta property="twitter:url" content={canonicalURL.href} />
+    <meta property="twitter:title" content={title} />
+    <meta
+      property="twitter:description"
+      content={description || String(siteConfig.site.description)}
+    />
+    <meta property="twitter:image" content={finalOgImageUrl} />
+
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(organizationSchema)}
+    />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(websiteSchema)}
+    />
+
+    <slot name="head" />
+
+    <meta name="generator" content={Astro.generator} />
+    <noscript>
+      <style>
+        [data-animate] {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <Header lang={lang} />
+    <main>
+      <slot />
+    </main>
+    <Footer lang={lang} />
+
+
+  </body>
+</html>

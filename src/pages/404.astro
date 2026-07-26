@@ -1,0 +1,40 @@
+---
+import type { Locale } from "@/i18n/index";
+import { getLangFromUrl, useTranslations, getLocalePath } from "@/i18n/index";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import LinkButton from "@/components/ui/LinkButton.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Layout from "@/layouts/Layout.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Layout
+  title={t.ui.not_found.page_title}
+  description={t.ui.not_found.description_1}
+  noindex={true}
+  lang={lang}
+>
+  <PageHero title="Not Found" subtitle={t.ui.not_found.page_subtitle} />
+  <Section>
+    <Container size="medium">
+      <div
+        class="mb-2xl text-text text-base leading-(--lh-loose) md:mb-3xl md:text-md"
+      >
+        <p class="mb-md last:mb-0">{t.ui.not_found.description_1}</p>
+        <p class="mb-md last:mb-0">{t.ui.not_found.description_2}</p>
+      </div>
+      <div>
+        <LinkButton
+          href={getLocalePath("/", lang)}
+          variant="solid"
+          size="large"
+        >
+          {t.ui.not_found.return_home}
+        </LinkButton>
+      </div>
+    </Container>
+  </Section>
+</Layout>

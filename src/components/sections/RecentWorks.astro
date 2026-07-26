@@ -1,0 +1,100 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import Badge from "@/components/ui/Badge.astro";
+import LinkText from "@/components/ui/LinkText.astro";
+import SectionTitle from "@/components/ui/SectionTitle.astro";
+import { useTranslations, getLocalePath, type Locale } from "@/i18n/index";
+import { filterByLang, resolveCategoryTitle } from "@/lib/collections";
+import type { CategoryData } from "@/types/index.d.ts";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const t = useTranslations(lang);
+const typedCategoryData = t.category as CategoryData;
+
+const allWorks = await getCollection("works");
+const works = filterByLang(allWorks, lang)
+  .sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+  )
+  .slice(0, 4);
+---
+
+<Section background="secondary">
+  <Container>
+    <div class="flex items-center justify-between gap-lg mb-xl md:mb-2xl">
+      <SectionTitle
+        title={t.ui.recent_works.section_title}
+        subtitle={t.ui.recent_works.section_subtitle}
+      />
+      <LinkText
+        href={getLocalePath("/works/", lang)}
+        ariaLabel={t.ui.recent_works.view_all}
+      >
+        {t.ui.recent_works.view_all}
+      </LinkText>
+    </div>
+
+    <div
+      class="grid grid-cols-1 gap-y-2 sm:grid-cols-2 sm:gap-x-xl sm:gap-y-xl"
+    >
+      {
+        works.map((work, index) => {
+          const categoryTitle = resolveCategoryTitle(
+            typedCategoryData,
+            "work",
+            work.data.type,
+          );
+          const isOpenSource = work.data.type === "open-source";
+          return (
+            <article
+              class="flex flex-col fade"
+              data-animate
+              data-animate-delay={index * 200}
+            >
+              <a
+                href={work.data.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group relative flex flex-col justify-end overflow-hidden rounded-4xl transition duration-(--transition-timing-slow) no-underline hover:cursor-pointer hover:-translate-y-0.5 aspect-3/2"
+              >
+                <Image
+                  src={work.data.image}
+                  alt={work.data.title}
+                  class="absolute inset-0 w-full h-full object-cover brightness-[0.4] transition-all duration-(--transition-timing-slow) group-hover:brightness-[0.2] group-hover:scale-105"
+                />
+                <div class="relative z-10 p-lg md:p-xl flex flex-col gap-sm">
+                  <Badge
+                    label={categoryTitle}
+                    variant={isOpenSource ? "open-source" : "default"}
+                  />
+                  <div class="mt-auto">
+                    <p class="text-white/60 text-xs mb-xs">
+                      {new Date(work.data.date + "-01").toLocaleDateString(
+                        lang === "fr" ? "fr-FR" : "en-US",
+                        { year: "numeric", month: "short" },
+                      )}
+                    </p>
+                    <h3 class="text-white text-lg md:text-xl font-medium leading-(--lh-snug)">
+                      {work.data.title}
+                    </h3>
+                    <p class="text-white/80 text-sm md:text-base leading-(--lh-snug)">
+                      {work.body}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </article>
+          );
+        })
+      }
+    </div>
+  </Container>
+</Section>

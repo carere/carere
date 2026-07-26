@@ -1,0 +1,65 @@
+[
+  {
+    "title": "Poste de travail",
+    "items": [
+      {
+        "name": "MacBook Pro 16\" M4 Max",
+        "description": "J'ai adoré Linux pendant des années, mais j'ai basculé sur macOS pour un système stable et fiable. La puce M4 Max, c'est le choix de la performance pure."
+      },
+      {
+        "name": "iPad Pro 13\" M4 Pro",
+        "description": "J'adore avoir un double écran, mais pas question d'un moniteur — je voulais une tablette pour dessiner et modéliser en 3D pour mon imprimante."
+      },
+      {
+        "name": "Mac Mini M4 Pro",
+        "description": "J'y fais tourner Vibe Kanban et je l'utilise comme serveur domestique. Meilleur investissement à ce jour."
+      },
+      {
+        "name": "Iqunix MQ80",
+        "description": "Un clavier mécanique avec une expérience de frappe très satisfaisante. Noir et rouge comme mon setup :)"
+      },
+      {
+        "name": "Pixel 10 Pro",
+        "description": "Toujours été sur Android, je ne compte pas en changer. J'adore l'expérience Pixel depuis la version open source."
+      }
+    ]
+  },
+  {
+    "title": "Outils de développement",
+    "items": [
+      {
+        "name": "VsCode",
+        "description": "J'ai essayé Cursor, Neovim et d'autres, mais je reviens toujours à VsCode."
+      },
+      {
+        "name": "Ghostty",
+        "description": "J'ai essayé Alacritty, mais j'adore Ghostty — fait par le GOAT, Hashimoto !"
+      },
+      {
+        "name": "Figma",
+        "description": "Fan de Figma depuis ses débuts. Aujourd'hui je l'utilise pour rapprocher design et développement grâce à leur super serveur MCP."
+      },
+      {
+        "name": "Raycast",
+        "description": "Meilleur lanceur d'applications pour macOS, sans discussion."
+      }
+    ]
+  },
+  {
+    "title": "IA",
+    "items": [
+      {
+        "name": "Claude Code",
+        "description": "Le meilleur compagnon pour coder, je ne m'imagine plus travailler sans. L'IA change vraiment la donne — ça multiplie ma productivité par 10 au quotidien !"
+      },
+      {
+        "name": "Chrome",
+        "description": "J'ai essayé tellement d'alternatives, mais Chrome est tout simplement le meilleur."
+      },
+      {
+        "name": "Vibe Kanban",
+        "description": "Super outil pour gérer du travail en parallèle sur plusieurs dépôts. Je l'utilise pour mes projets perso comme pro."
+      }
+    ]
+  }
+]

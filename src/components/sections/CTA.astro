@@ -1,0 +1,54 @@
+---
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import LinkButton from "@/components/ui/LinkButton.astro";
+import { useTranslations, getLocalePath, type Locale } from "@/i18n/index";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = "en" } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Section background="inverse">
+  <Container>
+    <div class="flex flex-col gap-xs md:gap-sm">
+      <h2
+        class="text-text-inverse text-[clamp(var(--font-size-2xl),5vw,var(--font-size-3xl))] font-normal leading-(--lh-none) tracking-[0.05em]"
+      >
+        {t.ui.cta.title}
+      </h2>
+      <span
+        class="text-text-inverse-sub text-sm md:text-base font-normal leading-(--lh-normal)"
+        >{t.ui.cta.subtitle}</span
+      >
+    </div>
+    <p
+      class="my-xl text-text-inverse-lightest text-base md:text-md leading-(--lh-loose)"
+    >
+      {t.ui.cta.description}
+    </p>
+    <ul
+      class="grid grid-cols-1 md:grid-cols-2 gap-sm text-(--color-text-inverse-lighter) text-sm sm:text-base leading-(--lh-relaxed)"
+    >
+      {
+        t.ui.cta.items.map((item) => (
+          <li class="relative pl-lg text-left before:content-['・'] before:absolute before:left-0">
+            {item}
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mt-2xl">
+      <LinkButton
+        href={getLocalePath("/contact", lang)}
+        variant="solid-sub"
+        size="large"
+      >
+        {t.ui.cta.button}
+      </LinkButton>
+    </div>
+  </Container>
+</Section>

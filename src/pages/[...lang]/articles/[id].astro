@@ -1,0 +1,131 @@
+---
+import type { GetStaticPaths } from "astro";
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+
+import type { Locale } from "@/i18n/index";
+import { useTranslations, getLocalePath } from "@/i18n/index";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import CTA from "@/components/sections/CTA.astro";
+import Badge from "@/components/ui/Badge.astro";
+import LinkButton from "@/components/ui/LinkButton.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import Layout from "@/layouts/Layout.astro";
+import { filterLiveArticles } from "@/lib/collections";
+
+export const getStaticPaths = (async () => {
+  const articles = filterLiveArticles(await getCollection("articles"));
+  return articles.map((article) => {
+    const lang = article.id.startsWith("fr/") ? "fr" : "en";
+    return {
+      params: {
+        lang: lang === "en" ? undefined : lang,
+        id: article.id.replace(/^(en|fr)\//, ""),
+      },
+      props: { article, lang },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const { article, lang: langProp } = Astro.props;
+const lang = (langProp === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+
+const { title, subtitle, author, date, image, description, categories } =
+  article.data;
+
+const { Content } = await render(article);
+
+const formattedDate = new Date(date).toLocaleDateString(
+  lang === "fr" ? "fr-FR" : "en-US",
+  {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  },
+);
+
+const ogImageUrl = new URL(image.src, Astro.site).href;
+---
+
+<Layout
+  title={`${title} - ${t.ui.articles.page_title}`}
+  description={description}
+  ogImage={ogImageUrl}
+  lang={lang}
+>
+  <PageHero title={title} subtitle={subtitle} />
+
+  {article.data.draft && (
+    <div class="py-md">
+      <Container size="medium">
+        <div class="flex items-center gap-sm px-lg py-md bg-amber-50 border border-amber-200 rounded-2xl">
+          <Badge label={t.ui.articles.draft_badge} variant="draft" />
+          <span class="text-amber-800 text-sm">
+            This article is a draft and is only visible in development mode.
+          </span>
+        </div>
+      </Container>
+    </div>
+  )}
+
+  <Section>
+    <Container size="medium">
+      <div class="w-full overflow-hidden rounded-6xl mb-xl">
+        <Image
+          src={image}
+          alt={title}
+          class="w-full h-auto object-cover aspect-video"
+        />
+      </div>
+
+      <div
+        class="grid grid-cols-1 gap-lg mt-xl mb-3xl p-xl bg-bg-secondary rounded-4xl sm:grid-cols-3 sm:gap-2xl sm:mb-4xl"
+      >
+        <div class="flex flex-col gap-xs">
+          <dt
+            class="text-text-sub text-xs font-medium leading-(--lh-tight) uppercase tracking-[0.05em]"
+          >
+            {author}
+          </dt>
+          <dd
+            class="text-text text-base font-normal leading-(--lh-normal) md:text-md"
+          >
+            {formattedDate}
+          </dd>
+        </div>
+        {
+          categories && categories.length > 0 && (
+            <div class="flex flex-col gap-xs">
+              <dt class="text-text-sub text-xs font-medium leading-(--lh-tight) uppercase tracking-[0.05em]">
+                {t.ui.works.category_label}
+              </dt>
+              <dd class="flex flex-wrap gap-xs">
+                {categories.map((cat) => (
+                  <Badge label={cat} />
+                ))}
+              </dd>
+            </div>
+          )
+        }
+      </div>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <div class="flex justify-center mt-2xl">
+        <LinkButton
+          href={getLocalePath("/articles", lang)}
+          variant="solid"
+          size="large"
+        >
+          {t.ui.works.back_to_list}
+        </LinkButton>
+      </div>
+    </Container>
+  </Section>
+
+  <CTA lang={lang} />
+</Layout>

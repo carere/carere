@@ -1,0 +1,26 @@
+---
+interface Props {
+  for?: string;
+  required?: boolean;
+}
+
+const { for: htmlFor, required = false } = Astro.props;
+
+const Tag: "label" | "legend" = htmlFor ? "label" : "legend";
+---
+
+<Tag
+  for={htmlFor}
+  class="flex gap-sm items-center text-text text-base font-medium leading-(--lh-normal)"
+>
+  <slot />
+  <span
+    class:list={[
+      "inline-block py-[2px] px-sm text-text-inverse rounded-lg text-xs font-normal",
+      required ? "bg-primary" : "bg-text-light",
+    ]}
+    aria-label={required ? "Required field" : "Optional field"}
+  >
+    {required ? "Required" : "Optional"}
+  </span>
+</Tag>

@@ -1,0 +1,70 @@
+---
+import GithubIcon from "@/assets/icons/github.svg";
+import LinkedinIcon from "@/assets/icons/linkedin.svg";
+import XSocialIcon from "@/assets/icons/x-social.svg";
+import socialData from "@/config/social.json";
+import type { SocialMedia } from "@/types/index.d.ts";
+
+interface Props {
+  size?: number;
+  class?: string;
+  linkClass?: string;
+  variant?: "icons" | "labeled";
+  labelTemplate?: string;
+}
+
+const {
+  size = 24,
+  variant = "icons",
+  labelTemplate,
+  class: className,
+  linkClass,
+} = Astro.props;
+
+type IconComponent = typeof GithubIcon;
+
+const iconMap: Record<string, IconComponent> = {
+  github: GithubIcon,
+  "x-social": XSocialIcon,
+  linkedin: LinkedinIcon,
+};
+
+const typedSocialData = socialData as SocialMedia[];
+---
+
+<ul class:list={[className]}>
+  {
+    typedSocialData.map((social) => {
+      const Icon = iconMap[social.icon];
+      return (
+        <li>
+          {variant === "labeled" ? (
+            <a
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class:list={[linkClass]}
+            >
+              <Icon width={size} height={size} />
+              <span>
+                {labelTemplate
+                  ? labelTemplate.replace("{platform}", social.label)
+                  : social.label}
+              </span>
+            </a>
+          ) : (
+            <a
+              href={social.url}
+              class:list={[linkClass]}
+              aria-label={social.label}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon width={size} height={size} />
+            </a>
+          )}
+        </li>
+      );
+    })
+  }
+</ul>

@@ -1,0 +1,93 @@
+---
+import type { GetStaticPaths } from "astro";
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import kevinPortrait from "@/assets/kevin.jpeg";
+import type { Locale } from "@/i18n/index";
+import { useTranslations } from "@/i18n/index";
+import { filterByLang } from "@/lib/collections";
+import Container from "@/components/layout/Container.astro";
+import Section from "@/components/layout/Section.astro";
+import CTA from "@/components/sections/CTA.astro";
+import PageHero from "@/components/ui/PageHero.astro";
+import SocialLinks from "@/components/ui/SocialLinks.astro";
+import Layout from "@/layouts/Layout.astro";
+
+export const getStaticPaths = (async () => {
+  const pages = await getCollection("pages");
+  return [
+    {
+      params: { lang: undefined },
+      props: {
+        page: filterByLang(pages, "en").find((p) => p.id === "en/about")!,
+      },
+    },
+    {
+      params: { lang: "fr" },
+      props: {
+        page: filterByLang(pages, "fr").find((p) => p.id === "fr/about")!,
+      },
+    },
+  ];
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const lang = (Astro.params.lang === "fr" ? "fr" : "en") as Locale;
+const t = useTranslations(lang);
+
+const { Content } = await render(page);
+---
+
+<Layout title={page.data.title} description={page.data.description} lang={lang}>
+  <PageHero title={page.data.title} subtitle={page.data.subtitle} />
+  <Section>
+    <Container>
+      <div class="grid gap-2xl md:grid-cols-[1fr_384px] md:gap-4xl">
+        <div class="flex flex-col gap-lg order-2 md:order-1">
+          <div class="prose">
+            <Content />
+          </div>
+        </div>
+        <div class="order-1 md:order-2">
+          <div
+            class="w-full max-w-96 mx-auto md:mx-0 rounded-4xl bg-bg-secondary overflow-hidden aspect-square"
+          >
+            <Image
+              src={kevinPortrait}
+              alt={page.data.title}
+              class="w-full h-full object-cover"
+              widths={[384, 640]}
+              sizes="(max-width: 900px) 384px, 384px"
+            />
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <Section background="secondary">
+    <Container>
+      <div class="flex flex-col gap-xl">
+        <h2
+          class="text-text text-xl md:text-2xl font-medium leading-(--lh-snug)"
+        >
+          {t.ui.about_page.follow_me}
+        </h2>
+        <SocialLinks
+          variant="labeled"
+          labelTemplate={t.ui.about_page.follow_on}
+          class="flex flex-col gap-md"
+          linkClass="group flex items-center gap-md text-text-sub text-base leading-(--lh-normal) no-underline transition-colors duration-(--transition-timing-slow) hover:text-primary"
+        />
+      </div>
+    </Container>
+  </Section>
+
+  <CTA lang={lang} />
+</Layout>
+
+<style>
+  html {
+    scroll-behavior: auto;
+  }
+</style>

@@ -1,0 +1,30 @@
+{
+  "main": [
+    { "title": "A propos", "path": "/about/" },
+    { "title": "Articles", "path": "/articles/" },
+    { "title": "Realisations", "path": "/works/" },
+    { "title": "Outils", "path": "/uses/" }
+  ],
+  "contact": {
+    "title": "Contact",
+    "path": "/contact/"
+  },
+  "footer": [
+    {
+      "name": "Ressources",
+      "menus": [
+        { "title": "Articles", "path": "/articles/" },
+        { "title": "Realisations", "path": "/works/" },
+        { "title": "Outils", "path": "/uses/" }
+      ]
+    },
+    {
+      "name": "Infos",
+      "menus": [
+        { "title": "A propos", "path": "/about/" },
+        { "title": "Contact", "path": "/contact/" },
+        { "title": "Confidentialite", "path": "/privacy/" }
+      ]
+    }
+  ]
+}
