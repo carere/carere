@@ -19,7 +19,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "nursery": {
         "useSortedClasses": {
           "level": "error",
@@ -50,7 +50,7 @@
   "assist": {
     "enabled": true,
     "actions": {
-      "recommended": true,
+      "preset": "recommended",
       "source": {
         "organizeImports": "on"
       }

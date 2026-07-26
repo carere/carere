@@ -2,7 +2,7 @@
   "name": "portfolio",
   "account_id": "f7e880a2223bc354486d9b057422fa0a",
   "main": "@astrojs/cloudflare/entrypoints/server",
-  "compatibility_date": "2026-05-11",
+  "compatibility_date": "2026-07-26",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
   "routes": [
